@@ -1,0 +1,7 @@
+.DS_Store
+
+# ignore user-specific Xcode 4 project settings
+xcuserdata/
+# except defaults they are created from
+!xcuserdata/default.*
+
