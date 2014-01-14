@@ -7,7 +7,6 @@
 //
 
 @import Cocoa;
-@import Quartz;
 
 @interface SCRAppDelegate : NSObject <NSApplicationDelegate>
 @property (assign) IBOutlet NSWindow *window;
