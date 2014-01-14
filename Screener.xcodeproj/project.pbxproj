@@ -18,6 +18,8 @@
 		D838DA1A187F448E00913B79 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D838D9F9187F448E00913B79 /* Cocoa.framework */; };
 		D838DA22187F448E00913B79 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D838DA20187F448E00913B79 /* InfoPlist.strings */; };
 		D838DA24187F448E00913B79 /* ScreenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D838DA23187F448E00913B79 /* ScreenerTests.m */; };
+		D838DA3B187F7CCB00913B79 /* Syphon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = D838DA37187F7C9300913B79 /* Syphon.framework */; };
+		D838DA3C187FC26900913B79 /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D838DA37187F7C9300913B79 /* Syphon.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +30,35 @@
 			remoteGlobalIDString = D838D9F5187F448E00913B79;
 			remoteInfo = Screener;
 		};
+		D838DA36187F7C9300913B79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D838DA31187F7C9300913B79 /* Syphon.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = Syphon;
+		};
+		D838DA38187F7C9F00913B79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D838DA31187F7C9300913B79 /* Syphon.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = Syphon;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D838DA3A187F7CBC00913B79 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D838DA3B187F7CCB00913B79 /* Syphon.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		D838D9F6187F448E00913B79 /* Screener.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Screener.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +81,7 @@
 		D838DA23187F448E00913B79 /* ScreenerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenerTests.m; sourceTree = "<group>"; };
 		D838DA2D187F7B2000913B79 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO.md; sourceTree = SOURCE_ROOT; };
 		D838DA2E187F7B2A00913B79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		D838DA31187F7C9300913B79 /* Syphon.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Syphon.xcodeproj; path = "vendor/Syphon-Framework/Syphon.xcodeproj"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +90,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D838D9FA187F448E00913B79 /* Cocoa.framework in Frameworks */,
+				D838DA3C187FC26900913B79 /* Syphon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +151,7 @@
 				D838DA0C187F448E00913B79 /* SCRAppDelegate.m */,
 				D838DA0E187F448E00913B79 /* MainMenu.xib */,
 				D838DA11187F448E00913B79 /* Images.xcassets */,
+				D838DA30187F7C8400913B79 /* Vendor */,
 				D838DA00187F448E00913B79 /* Supporting Files */,
 			);
 			path = Screener;
@@ -156,6 +189,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D838DA30187F7C8400913B79 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				D838DA31187F7C9300913B79 /* Syphon.xcodeproj */,
+			);
+			name = Vendor;
+			sourceTree = "<group>";
+		};
+		D838DA32187F7C9300913B79 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D838DA37187F7C9300913B79 /* Syphon.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -166,10 +215,12 @@
 				D838D9F2187F448E00913B79 /* Sources */,
 				D838D9F3187F448E00913B79 /* Frameworks */,
 				D838D9F4187F448E00913B79 /* Resources */,
+				D838DA3A187F7CBC00913B79 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D838DA39187F7C9F00913B79 /* PBXTargetDependency */,
 			);
 			name = Screener;
 			productName = Screener;
@@ -220,6 +271,12 @@
 			mainGroup = D838D9ED187F448E00913B79;
 			productRefGroup = D838D9F7187F448E00913B79 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = D838DA32187F7C9300913B79 /* Products */;
+					ProjectRef = D838DA31187F7C9300913B79 /* Syphon.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D838D9F5187F448E00913B79 /* Screener */,
@@ -227,6 +284,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		D838DA37187F7C9300913B79 /* Syphon.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Syphon.framework;
+			remoteRef = D838DA36187F7C9300913B79 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		D838D9F4187F448E00913B79 /* Resources */ = {
@@ -275,6 +342,11 @@
 			isa = PBXTargetDependency;
 			target = D838D9F5187F448E00913B79 /* Screener */;
 			targetProxy = D838DA1B187F448E00913B79 /* PBXContainerItemProxy */;
+		};
+		D838DA39187F7C9F00913B79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Syphon;
+			targetProxy = D838DA38187F7C9F00913B79 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -469,6 +541,7 @@
 				D838DA29187F448E00913B79 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D838DA2A187F448E00913B79 /* Build configuration list for PBXNativeTarget "ScreenerTests" */ = {
 			isa = XCConfigurationList;
@@ -477,6 +550,7 @@
 				D838DA2C187F448E00913B79 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
