@@ -20,7 +20,7 @@
         <viewController id="aKh-UX-Lcg" customClass="SCRViewController">
             <connections>
                 <outlet property="displayPopUpButton" destination="qJV-F4-i37" id="Wxe-q9-ZIt"/>
-                <outlet property="glView" destination="0hC-Vd-Wd7" id="2CB-qn-HBe"/>
+                <outlet property="glView" destination="wEk-hG-Kxz" id="vfo-wS-BP4"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="Rb6-HV-40X"/>
             </connections>
         </viewController>
@@ -674,7 +674,7 @@
             </items>
         </menu>
         <window title="Screener" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="720" height="500"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
@@ -682,7 +682,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="720" height="500"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <openGLView depthSize="32bit" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" useRecovery="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0hC-Vd-Wd7">
+                    <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wEk-hG-Kxz" customClass="SCROpenGLView">
                         <rect key="frame" x="0.0" y="61" width="720" height="439"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </openGLView>
@@ -701,6 +701,9 @@
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <connections>
+                            <action selector="displayPopUpButtonDidChange:" target="aKh-UX-Lcg" id="7wg-K9-j84"/>
+                        </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3fD-oZ-giE">
                         <rect key="frame" x="234" y="23" width="54" height="17"/>
@@ -713,14 +716,14 @@
                     </textField>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="0hC-Vd-Wd7" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="0UM-7J-Pm9"/>
-                    <constraint firstAttribute="trailing" secondItem="0hC-Vd-Wd7" secondAttribute="trailing" id="25a-f5-KDq"/>
+                    <constraint firstAttribute="trailing" secondItem="wEk-hG-Kxz" secondAttribute="trailing" id="4ZL-V5-i8J"/>
                     <constraint firstAttribute="centerX" secondItem="qJV-F4-i37" secondAttribute="centerX" priority="750" constant="-46" id="6wM-ei-sp0"/>
+                    <constraint firstItem="wEk-hG-Kxz" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="8S4-vV-o8o"/>
+                    <constraint firstItem="qJV-F4-i37" firstAttribute="top" secondItem="wEk-hG-Kxz" secondAttribute="bottom" constant="20" id="BqI-xZ-Dnp"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qJV-F4-i37" secondAttribute="trailing" constant="20" id="JWu-no-XtI"/>
-                    <constraint firstItem="0hC-Vd-Wd7" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="M1W-Fj-gfE"/>
                     <constraint firstItem="qJV-F4-i37" firstAttribute="leading" secondItem="3fD-oZ-giE" secondAttribute="trailing" constant="20" id="NSw-O0-zBe"/>
+                    <constraint firstItem="wEk-hG-Kxz" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="O8D-ha-pA8"/>
                     <constraint firstItem="3fD-oZ-giE" firstAttribute="baseline" secondItem="qJV-F4-i37" secondAttribute="baseline" id="VYD-pK-zGz"/>
-                    <constraint firstItem="qJV-F4-i37" firstAttribute="top" secondItem="0hC-Vd-Wd7" secondAttribute="bottom" constant="20" id="fmR-6e-keA"/>
                     <constraint firstAttribute="bottom" secondItem="qJV-F4-i37" secondAttribute="bottom" constant="20" id="gBx-C3-1Rv"/>
                     <constraint firstItem="3fD-oZ-giE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" id="rQ5-Y3-MvE"/>
                 </constraints>

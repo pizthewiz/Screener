@@ -7,8 +7,9 @@
 //
 
 @import Cocoa;
+#import "SCROpenGLView.h"
 
 @interface SCRViewController : NSViewController
-@property (nonatomic, weak) IBOutlet NSOpenGLView* glView;
+@property (nonatomic, weak) IBOutlet SCROpenGLView* glView;
 @property (nonatomic, weak) IBOutlet NSPopUpButton* displayPopUpButton;
 @end

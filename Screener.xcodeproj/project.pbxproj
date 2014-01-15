@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D8024E841885E718006E05ED /* SCRViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8024E831885E718006E05ED /* SCRViewController.m */; };
+		D8143D8C188730F5004C2B22 /* SCROpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8143D8B188730F5004C2B22 /* SCROpenGLView.m */; };
 		D838D9FA187F448E00913B79 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D838D9F9187F448E00913B79 /* Cocoa.framework */; };
 		D838DA04187F448E00913B79 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D838DA02187F448E00913B79 /* InfoPlist.strings */; };
 		D838DA06187F448E00913B79 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D838DA05187F448E00913B79 /* main.m */; };
@@ -64,6 +65,8 @@
 /* Begin PBXFileReference section */
 		D8024E821885E718006E05ED /* SCRViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCRViewController.h; sourceTree = "<group>"; };
 		D8024E831885E718006E05ED /* SCRViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCRViewController.m; sourceTree = "<group>"; };
+		D8143D8A188730F5004C2B22 /* SCROpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCROpenGLView.h; sourceTree = "<group>"; };
+		D8143D8B188730F5004C2B22 /* SCROpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCROpenGLView.m; sourceTree = "<group>"; };
 		D838D9F6187F448E00913B79 /* Screener.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Screener.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D838D9F9187F448E00913B79 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		D838D9FC187F448E00913B79 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -154,6 +157,8 @@
 				D838DA0C187F448E00913B79 /* SCRAppDelegate.m */,
 				D8024E821885E718006E05ED /* SCRViewController.h */,
 				D8024E831885E718006E05ED /* SCRViewController.m */,
+				D8143D8A188730F5004C2B22 /* SCROpenGLView.h */,
+				D8143D8B188730F5004C2B22 /* SCROpenGLView.m */,
 				D838DA0E187F448E00913B79 /* MainMenu.xib */,
 				D838DA11187F448E00913B79 /* Images.xcassets */,
 				D838DA30187F7C8400913B79 /* Vendor */,
@@ -330,6 +335,7 @@
 				D838DA06187F448E00913B79 /* main.m in Sources */,
 				D8024E841885E718006E05ED /* SCRViewController.m in Sources */,
 				D838DA0D187F448E00913B79 /* SCRAppDelegate.m in Sources */,
+				D8143D8C188730F5004C2B22 /* SCROpenGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
