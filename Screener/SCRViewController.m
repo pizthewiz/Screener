@@ -20,20 +20,17 @@
 
 @implementation SCRViewController
 
-- (id)initWithNibName:(NSString*)name bundle:(NSBundle*)bundle {
-    self = [super initWithNibName:name bundle:bundle];
-    if (self) {
-        displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
-        if (!displayQueue) {
-            NSLog(@"ERROR - failed to create display queue");
-            exit(EXIT_FAILURE);
-        }
 
-        // TODO - remove after NSPopUpButton is added to xib
-        [self selectDisplay:CGMainDisplayID()];
-        [self start];
+- (void)awakeFromNib {
+    displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
+    if (!displayQueue) {
+        NSLog(@"ERROR - failed to create display queue");
+        exit(EXIT_FAILURE);
     }
-    return self;
+
+    // TODO - populate popup with display names
+    [self selectDisplay:CGMainDisplayID()];
+    [self startDisplayStream];
 }
 
 - (void)dealloc {
@@ -41,7 +38,7 @@
         return;
     }
 
-    [self stop];
+    [self stopDisplayStream];
 
     CFRelease(displayStream);
     displayStream = NULL;
@@ -71,17 +68,14 @@
     CGDisplayModeRelease(mode);
     mode = NULL;
 
-    CFDictionaryRef properties = (__bridge CFDictionaryRef)(@{
-        (NSString*)kCGDisplayStreamQueueDepth : @20,
-//        (NSString*)kCGDisplayStreamMinimumFrameTime : minframetime,
-//        (NSString*)kCGDisplayStreamPreserveAspectRatio: @NO
+    NSDictionary* properties = (@{
+//        (NSString*)kCGDisplayStreamQueueDepth: @20,
+//        (NSString*)kCGDisplayStreamMinimumFrameTime: @(1.0f/30.0f),
+//        (NSString*)kCGDisplayStreamShowCursor: (NSObject*)kCFBooleanFalse,
     });
-    displayStream = CGDisplayStreamCreateWithDispatchQueue(self.displayID, pixelWidth, pixelHeight, 'BGRA', properties, displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
+    displayStream = CGDisplayStreamCreateWithDispatchQueue(self.displayID, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
         if (status == kCGDisplayStreamFrameStatusFrameComplete && frameSurface) {
-            // As per CGDisplayStreams header
-            IOSurfaceIncrementUseCount(frameSurface);
-            // -emitNewFrame: retains the frame
-            [self emitNewFrame:frameSurface];
+            [self emitFrame:frameSurface];
         }
     });
 
@@ -107,7 +101,7 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
     return kCVReturnSuccess;
 }
 
-- (void)start {
+- (void)startDisplayStream {
     if (!displayStream) {
         return;
     }
@@ -127,7 +121,7 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
     }
 }
 
-- (void)stop {
+- (void)stopDisplayStream {
     if (!displayStream) {
         return;
     }
@@ -149,29 +143,29 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
 
 #pragma mark -
 
-- (IOSurfaceRef)getAndSetFrameSurface:(IOSurfaceRef)new {
-    BOOL success = false;
-    IOSurfaceRef old;
+- (IOSurfaceRef)getAndSetFrame:(IOSurfaceRef)surface {
+    BOOL status = NO;
+    IOSurfaceRef oldSurface;
     do {
-        old = updatedSurface;
-        success = OSAtomicCompareAndSwapPtrBarrier(old, new, (void * volatile *)&updatedSurface);
-    } while (!success);
-    return old;
+        oldSurface = updatedSurface;
+        status = OSAtomicCompareAndSwapPtrBarrier(oldSurface, surface, (void * volatile *)&updatedSurface);
+    } while (!status);
+    return oldSurface;
 }
 
-- (IOSurfaceRef)copyNewFrame {
-    return [self getAndSetFrameSurface:NULL];
+- (IOSurfaceRef)copyFrame {
+    return [self getAndSetFrame:NULL];
 }
 
-- (void)emitNewFrame:(IOSurfaceRef)frameSurface {
-    CFRetain(frameSurface);
-    [self getAndSetFrameSurface:frameSurface];
+- (void)emitFrame:(IOSurfaceRef)surface {
+    CFRetain(surface);
+    [self getAndSetFrame:surface];
 }
 
 #pragma mark -
 
 - (void)publishFrameSurface {
-    IOSurfaceRef frameSurface = [self copyNewFrame];
+    IOSurfaceRef frameSurface = [self copyFrame];
     if (!frameSurface) {
         return;
     }
