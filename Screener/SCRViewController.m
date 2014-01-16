@@ -9,17 +9,36 @@
 #import "SCRViewController.h"
 @import Quartz;
 
+@interface NSArray (SCRAdditions)
+// Returns a new array containing the receiving array’s elements that are not present in another array.
+- (NSArray*)objectsNotInArray:(NSArray*)array;
+@end
+
+@implementation NSArray (SCRAdditions)
+- (NSArray*)objectsNotInArray:(NSArray*)array {
+    NSMutableArray* list = [[NSMutableArray alloc] init];
+    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL* stop) {
+        if ([array containsObject:obj]) {
+            return;
+        }
+        [list addObject:obj];
+    }];
+    return list;
+}
+@end
+
+static CGDirectDisplayID kSCRDisplayIDNone = 0;
+
 @interface SCRViewController () {
     CVDisplayLinkRef displayLink;
     dispatch_queue_t displayQueue;
     CGDisplayStreamRef displayStream;
     IOSurfaceRef updatedSurface;
 }
-@property (nonatomic) CGDirectDisplayID displayID;
+@property (nonatomic) CGDirectDisplayID display;
 @end
 
 @implementation SCRViewController
-
 
 - (void)awakeFromNib {
     displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
@@ -28,9 +47,7 @@
         exit(EXIT_FAILURE);
     }
 
-    // TODO - populate popup with display names
-    [self selectDisplay:CGMainDisplayID()];
-    [self startDisplayStream];
+    [self setupDisplayPopUp];
 }
 
 - (void)dealloc {
@@ -49,20 +66,82 @@
 
 #pragma mark -
 
-- (void)selectDisplay:(CGDirectDisplayID)displayID {
-    if (displayID == self.displayID) {
+- (void)setupDisplayPopUp {
+    uint32_t displayCount;
+    CGError error = CGGetOnlineDisplayList(0, NULL, &displayCount);
+    if (error != kCGErrorSuccess) {
+        NSLog(@"ERROR - failed to get online display list");
+        exit(EXIT_FAILURE);
+    }
+    CGDirectDisplayID* displays = (CGDirectDisplayID*)calloc(displayCount, sizeof(CGDirectDisplayID));
+    error = CGGetOnlineDisplayList(displayCount, displays, &displayCount);
+    if (error != kCGErrorSuccess) {
+        NSLog(@"ERROR - failed to get online display list");
+        exit(EXIT_FAILURE);
+    }
+
+    NSMutableArray* displayList = [[NSMutableArray alloc] init];
+    [displayList addObject:@{@"name": @"- NONE -", @"id": @(kSCRDisplayIDNone)}];
+
+    for (NSUInteger idx = 0; idx < displayCount; idx++) {
+        CGDirectDisplayID display = displays[idx];
+
+        // ignore deprecated warning on CGDisplayIOServicePort, no replacement has been provided!
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        NSDictionary* deviceInfo = (__bridge_transfer NSDictionary*)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(display), kIODisplayOnlyPreferredName);
+#pragma clang diagnostic pop
+
+        NSDictionary* localizedNames = deviceInfo[@kDisplayProductName];
+        NSString* screenName = ([localizedNames count] > 0) ? localizedNames[[localizedNames allKeys][0]] : @"Unknown";
+        [displayList addObject:@{@"name": screenName, @"id": @(display)}];
+    }
+    free(displays);
+
+    NSArray* missingDisplays = [self.displayArrayController.content objectsNotInArray:displayList];
+    [self.displayArrayController removeObjects:missingDisplays];
+
+    NSArray* addedDisplays = [displayList objectsNotInArray:self.displayArrayController.content];
+    [self.displayArrayController addObjects:addedDisplays];
+}
+
+- (IBAction)displayPopUpButtonDidChange:(id)sender {
+    // NB - I think somewhere
+    NSDictionary* displayDescriptor = self.displayArrayController.content[[sender indexOfSelectedItem]];
+    CGDirectDisplayID display = [displayDescriptor[@"id"] unsignedIntValue];
+
+    // bail if the selection hasn't changed
+    if (self.display == display) {
         return;
     }
+
+    [self selectDisplay:display];
+    [self startDisplayStream];
+}
+
+#pragma mark -
+
+- (void)selectDisplay:(CGDirectDisplayID)display {
+    [self stopDisplayStream];
 
     if (displayStream) {
         CFRelease(displayStream);
         displayStream = NULL;
     }
 
-    self.displayID = displayID;
+    if (displayLink) {
+        CVDisplayLinkRelease(displayLink);
+        displayLink = NULL;
+    }
+
+    self.display = display;
+
+    if (self.display == kSCRDisplayIDNone) {
+        return;
+    }
 
     // create stream
-    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(self.displayID);
+    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(self.display);
     size_t pixelWidth = CGDisplayModeGetPixelWidth(mode);
     size_t pixelHeight = CGDisplayModeGetPixelHeight(mode);
     CGDisplayModeRelease(mode);
@@ -73,14 +152,14 @@
 //        (NSString*)kCGDisplayStreamMinimumFrameTime: @(1.0f/30.0f),
 //        (NSString*)kCGDisplayStreamShowCursor: (NSObject*)kCFBooleanFalse,
     });
-    displayStream = CGDisplayStreamCreateWithDispatchQueue(self.displayID, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
+    displayStream = CGDisplayStreamCreateWithDispatchQueue(self.display, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
         if (status == kCGDisplayStreamFrameStatusFrameComplete && frameSurface) {
             [self emitFrame:frameSurface];
         }
     });
 
     // create display link
-    CVReturn error = CVDisplayLinkCreateWithCGDisplay(self.displayID, &displayLink);
+    CVReturn error = CVDisplayLinkCreateWithCGDisplay(self.display, &displayLink);
     if (error != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to create display link with error %d", error);
         displayLink = NULL;
@@ -97,7 +176,7 @@
 #pragma mark -
 
 CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext) {
-    [(__bridge SCRViewController*)displayLinkContext publishFrameSurface];
+    [(__bridge SCRViewController*)displayLinkContext publishFrame];
     return kCVReturnSuccess;
 }
 
@@ -164,15 +243,16 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
 
 #pragma mark -
 
-- (void)publishFrameSurface {
-    IOSurfaceRef frameSurface = [self copyFrame];
-    if (!frameSurface) {
+- (void)publishFrame {
+    IOSurfaceRef frame = [self copyFrame];
+    if (!frame) {
         return;
     }
 
-    // TODO - send to server
+    // TODO - publish
+//    [self.glView performSelector:@selector(drawView)];
 
-    CFRelease(frameSurface);
+    CFRelease(frame);
 }
 
 @end

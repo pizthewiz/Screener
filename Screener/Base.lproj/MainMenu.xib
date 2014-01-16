@@ -19,11 +19,13 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <viewController id="aKh-UX-Lcg" customClass="SCRViewController">
             <connections>
+                <outlet property="displayArrayController" destination="fO3-aN-EcX" id="tPj-RU-ui0"/>
                 <outlet property="displayPopUpButton" destination="qJV-F4-i37" id="Wxe-q9-ZIt"/>
-                <outlet property="glView" destination="wEk-hG-Kxz" id="vfo-wS-BP4"/>
+                <outlet property="glView" destination="wEk-hG-Kxz" id="Uab-8J-5kG"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="Rb6-HV-40X"/>
             </connections>
         </viewController>
+        <arrayController selectsInsertedObjects="NO" id="fO3-aN-EcX"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
                 <menuItem title="Screener" id="1Xt-HY-uBw">
@@ -692,17 +694,18 @@
                         <constraints>
                             <constraint firstAttribute="width" constant="200" id="gT3-Sd-P8W"/>
                         </constraints>
-                        <popUpButtonCell key="cell" type="push" title="- NONE -" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="RkN-22-rzi" id="Onu-sA-1YD">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="Onu-sA-1YD">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="db7-6g-E1X">
                                 <items>
-                                    <menuItem title="- NONE -" state="on" id="RkN-22-rzi"/>
+                                    <menuItem title="- NONE -" id="RkN-22-rzi"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
                         <connections>
                             <action selector="displayPopUpButtonDidChange:" target="aKh-UX-Lcg" id="7wg-K9-j84"/>
+                            <binding destination="fO3-aN-EcX" name="content" keyPath="arrangedObjects.name" id="5gX-jy-x08"/>
                         </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3fD-oZ-giE">

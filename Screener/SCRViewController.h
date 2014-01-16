@@ -11,5 +11,7 @@
 
 @interface SCRViewController : NSViewController
 @property (nonatomic, weak) IBOutlet SCROpenGLView* glView;
+@property (nonatomic, weak) IBOutlet NSArrayController* displayArrayController;
 @property (nonatomic, weak) IBOutlet NSPopUpButton* displayPopUpButton;
+- (IBAction)displayPopUpButtonDidChange:(id)sender;
 @end
