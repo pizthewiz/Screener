@@ -1,6 +1,5 @@
 
 ### NOW
-- [ ] use CGDisplayRegisterReconfigurationCallback to regenerate display popup
 
 ### LATER
 - [ ] might not need DisplayLink

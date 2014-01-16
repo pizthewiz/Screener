@@ -9,25 +9,8 @@
 #import "SCRViewController.h"
 @import Quartz;
 
-@interface NSArray (SCRAdditions)
-// Returns a new array containing the receiving array’s elements that are not present in another array.
-- (NSArray*)objectsNotInArray:(NSArray*)array;
-@end
-
-@implementation NSArray (SCRAdditions)
-- (NSArray*)objectsNotInArray:(NSArray*)array {
-    NSMutableArray* list = [[NSMutableArray alloc] init];
-    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL* stop) {
-        if ([array containsObject:obj]) {
-            return;
-        }
-        [list addObject:obj];
-    }];
-    return list;
-}
-@end
-
-static CGDirectDisplayID kSCRDisplayIDNone = 0;
+static CGDirectDisplayID const kSCRDisplayIDNone = 0;
+static void* SelectionIndexContext = &SelectionIndexContext;
 
 @interface SCRViewController () {
     CVDisplayLinkRef displayLink;
@@ -47,26 +30,38 @@ static CGDirectDisplayID kSCRDisplayIDNone = 0;
         exit(EXIT_FAILURE);
     }
 
-    [self setupDisplayPopUp];
+    [self setupDisplayList];
+    CGDisplayRegisterReconfigurationCallback(DisplayReconfigurationCallback, (__bridge void*)(self));
+
+    [self.displayArrayController addObserver:self forKeyPath:@"selectionIndex" options:NSKeyValueObservingOptionNew context:SelectionIndexContext];
 }
 
 - (void)dealloc {
-    if (!displayStream) {
-        return;
-    }
+    [self.displayArrayController removeObserver:self forKeyPath:@"selectionIndex" context:SelectionIndexContext];
 
-    [self stopDisplayStream];
-
-    CFRelease(displayStream);
-    displayStream = NULL;
-
-    CVDisplayLinkRelease(displayLink);
-    displayLink = NULL;
+    // reuse cleanup from -selectDisplay:
+    [self selectDisplay:kSCRDisplayIDNone];
 }
 
 #pragma mark -
 
-- (void)setupDisplayPopUp {
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+    if (context == SelectionIndexContext) {
+        [self displaySelectionDidChange:nil];
+    }
+}
+
+#pragma mark -
+
+void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSummaryFlags flags, void* userInfo) {
+    // only pay attention to add and remove notices
+    if (flags & kCGDisplayBeginConfigurationFlag || !(flags & kCGDisplayAddFlag || flags & kCGDisplayRemoveFlag)) {
+        return;
+    }
+    [(__bridge SCRViewController*)userInfo setupDisplayList];
+}
+
+- (void)setupDisplayList {
     uint32_t displayCount;
     CGError error = CGGetOnlineDisplayList(0, NULL, &displayCount);
     if (error != kCGErrorSuccess) {
@@ -98,16 +93,11 @@ static CGDirectDisplayID kSCRDisplayIDNone = 0;
     }
     free(displays);
 
-    NSArray* missingDisplays = [self.displayArrayController.content objectsNotInArray:displayList];
-    [self.displayArrayController removeObjects:missingDisplays];
-
-    NSArray* addedDisplays = [displayList objectsNotInArray:self.displayArrayController.content];
-    [self.displayArrayController addObjects:addedDisplays];
+    [self.displayArrayController setContent:displayList];
 }
 
-- (IBAction)displayPopUpButtonDidChange:(id)sender {
-    // NB - I think somewhere
-    NSDictionary* displayDescriptor = self.displayArrayController.content[[sender indexOfSelectedItem]];
+- (void)displaySelectionDidChange:(id)sender {
+    NSDictionary* displayDescriptor = [self.displayArrayController.selectedObjects firstObject];
     CGDirectDisplayID display = [displayDescriptor[@"id"] unsignedIntValue];
 
     // bail if the selection hasn't changed
@@ -165,7 +155,7 @@ static CGDirectDisplayID kSCRDisplayIDNone = 0;
         displayLink = NULL;
         exit(EXIT_FAILURE);
     }
-    error = CVDisplayLinkSetOutputCallback(displayLink, DisplayLinkCallback, (__bridge void*)self);
+    error = CVDisplayLinkSetOutputCallback(displayLink, DisplayLinkCallback, (__bridge void*)(self));
     if (error != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to link display link to callback with error %d", error);
         displayLink = NULL;

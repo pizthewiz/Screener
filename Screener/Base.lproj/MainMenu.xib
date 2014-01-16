@@ -20,7 +20,6 @@
         <viewController id="aKh-UX-Lcg" customClass="SCRViewController">
             <connections>
                 <outlet property="displayArrayController" destination="fO3-aN-EcX" id="tPj-RU-ui0"/>
-                <outlet property="displayPopUpButton" destination="qJV-F4-i37" id="Wxe-q9-ZIt"/>
                 <outlet property="glView" destination="wEk-hG-Kxz" id="Uab-8J-5kG"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="Rb6-HV-40X"/>
             </connections>
@@ -704,8 +703,8 @@
                             </menu>
                         </popUpButtonCell>
                         <connections>
-                            <action selector="displayPopUpButtonDidChange:" target="aKh-UX-Lcg" id="7wg-K9-j84"/>
-                            <binding destination="fO3-aN-EcX" name="content" keyPath="arrangedObjects.name" id="5gX-jy-x08"/>
+                            <binding destination="fO3-aN-EcX" name="content" keyPath="arrangedObjects.name" id="PjJ-1c-N1Z"/>
+                            <binding destination="fO3-aN-EcX" name="selectedIndex" keyPath="selectionIndex" previousBinding="PjJ-1c-N1Z" id="39e-RN-Erw"/>
                         </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3fD-oZ-giE">
