@@ -1,7 +1,9 @@
 
 ### NOW
+- [ ] actually get preview working
+- [ ] pump texture into server
 
 ### LATER
-- [ ] might not need DisplayLink
+- [ ] the display link may not be necessary, the display stream might handle it
 - [ ] application icon
 - [ ] check out if a core profile app can send a texture to a syphon server
