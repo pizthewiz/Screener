@@ -9,5 +9,9 @@
 @import Cocoa;
 
 @interface SCROpenGLView : NSOpenGLView
-- (void)drawFrame:(IOSurfaceRef)surface;
+@property (nonatomic, readonly) GLuint surfaceTexture;
+@property (nonatomic) CGSize surfaceSize;
+- (GLuint)createTextureForSurface:(IOSurfaceRef)surface;
+- (void)releaseTexture;
+- (void)drawScene;
 @end

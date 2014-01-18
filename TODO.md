@@ -1,8 +1,7 @@
 
 ### NOW
-- [ ] pump texture into server
-- [ ] sort out some workflow to hide the window
 - [ ] activity during capture to prevent app nap
+- [ ] sort out some workflow to hide the window
 - [ ] prevent texture stretching in preview
 
 ### LATER

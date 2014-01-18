@@ -8,6 +8,7 @@
 
 #import "SCRViewController.h"
 @import Quartz;
+#import <Syphon/Syphon.h>
 
 static CGDirectDisplayID const kSCRDisplayIDNone = 0;
 static void* SelectionIndexContext = &SelectionIndexContext;
@@ -19,6 +20,7 @@ static void* SelectionIndexContext = &SelectionIndexContext;
     IOSurfaceRef updatedSurface;
 }
 @property (nonatomic) CGDirectDisplayID display;
+@property (nonatomic, strong) SyphonServer* server;
 @end
 
 @implementation SCRViewController
@@ -241,8 +243,15 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
         return;
     }
 
-    [self.glView drawFrame:frame];
-    // TODO - publish to syphon
+    GLuint surfaceTexture = [self.glView createTextureForSurface:frame];
+    [self.glView drawScene];
+    if (surfaceTexture != 0) {
+        if (!self.server) {
+            self.server = [[SyphonServer alloc] initWithName:@"Screener" context:[[self.glView openGLContext] CGLContextObj] options:nil];
+        }
+        [self.server publishFrameTexture:surfaceTexture textureTarget:GL_TEXTURE_RECTANGLE_EXT imageRegion:NSMakeRect(0.0f, 0.0f, self.glView.surfaceSize.width, self.glView.surfaceSize.height) textureDimensions:self.glView.surfaceSize flipped:YES];
+    }
+    [self.glView releaseTexture];
 
     CFRelease(frame);
 }
