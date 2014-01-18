@@ -13,21 +13,20 @@
 static CGDirectDisplayID const kSCRDisplayIDNone = 0;
 static void* SelectionIndexContext = &SelectionIndexContext;
 
-@interface SCRViewController () {
-    CVDisplayLinkRef displayLink;
-    dispatch_queue_t displayQueue;
-    CGDisplayStreamRef displayStream;
-    IOSurfaceRef updatedSurface;
-}
+@interface SCRViewController ()
+@property (nonatomic) dispatch_queue_t displayQueue;
 @property (nonatomic) CGDirectDisplayID display;
+@property (nonatomic) CGDisplayStreamRef displayStream;
+@property (nonatomic) CVDisplayLinkRef displayLink;
+@property (nonatomic) IOSurfaceRef updatedSurface;
 @property (nonatomic, strong) SyphonServer* server;
 @end
 
 @implementation SCRViewController
 
 - (void)awakeFromNib {
-    displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
-    if (!displayQueue) {
+    self.displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
+    if (!self.displayQueue) {
         NSLog(@"ERROR - failed to create display queue");
         exit(EXIT_FAILURE);
     }
@@ -43,6 +42,8 @@ static void* SelectionIndexContext = &SelectionIndexContext;
 
     // reuse cleanup from -selectDisplay:
     [self selectDisplay:kSCRDisplayIDNone];
+
+    [self.server stop];
 }
 
 #pragma mark -
@@ -116,14 +117,14 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
 - (void)selectDisplay:(CGDirectDisplayID)display {
     [self stopDisplayStream];
 
-    if (displayStream) {
-        CFRelease(displayStream);
-        displayStream = NULL;
+    if (self.displayStream) {
+        CFRelease(self.displayStream);
+        self.displayStream = NULL;
     }
 
-    if (displayLink) {
-        CVDisplayLinkRelease(displayLink);
-        displayLink = NULL;
+    if (self.displayLink) {
+        CVDisplayLinkRelease(self.displayLink);
+        self.displayLink = NULL;
     }
 
     self.display = display;
@@ -146,23 +147,23 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
 //        (NSString*)kCGDisplayStreamMinimumFrameTime: @(1.0f/30.0f),
 //        (NSString*)kCGDisplayStreamShowCursor: (NSObject*)kCFBooleanFalse,
     });
-    displayStream = CGDisplayStreamCreateWithDispatchQueue(self.display, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
+    self.displayStream = CGDisplayStreamCreateWithDispatchQueue(self.display, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, self.displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
         if (status == kCGDisplayStreamFrameStatusFrameComplete && frameSurface) {
             [self emitFrame:frameSurface];
         }
     });
 
     // create display link
-    CVReturn error = CVDisplayLinkCreateWithCGDisplay(self.display, &displayLink);
+    CVReturn error = CVDisplayLinkCreateWithCGDisplay(self.display, &_displayLink);
     if (error != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to create display link with error %d", error);
-        displayLink = NULL;
+        self.displayLink = NULL;
         exit(EXIT_FAILURE);
     }
-    error = CVDisplayLinkSetOutputCallback(displayLink, DisplayLinkCallback, (__bridge void*)(self));
+    error = CVDisplayLinkSetOutputCallback(self.displayLink, DisplayLinkCallback, (__bridge void*)(self));
     if (error != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to link display link to callback with error %d", error);
-        displayLink = NULL;
+        self.displayLink = NULL;
         exit(EXIT_FAILURE);
     }
 }
@@ -175,19 +176,19 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
 }
 
 - (void)startDisplayStream {
-    if (!displayStream) {
+    if (!self.displayStream) {
         return;
     }
 
     // start display link
-    CVReturn err = CVDisplayLinkStart(displayLink);
+    CVReturn err = CVDisplayLinkStart(self.displayLink);
     if (err != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to start display link with error %d", err);
         exit(EXIT_FAILURE);
     }
 
     // start stream
-    CGError error = CGDisplayStreamStart(displayStream);
+    CGError error = CGDisplayStreamStart(self.displayStream);
     if (error != kCGErrorSuccess) {
         NSLog(@"ERROR - failed to start display stream with error %d", error);
         exit(EXIT_FAILURE);
@@ -195,19 +196,19 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
 }
 
 - (void)stopDisplayStream {
-    if (!displayStream) {
+    if (!self.displayStream) {
         return;
     }
 
     // stop display link
-    CVReturn err = CVDisplayLinkStop(displayLink);
+    CVReturn err = CVDisplayLinkStop(self.displayLink);
     if (err != kCVReturnSuccess) {
         NSLog(@"ERROR - failed to stop display link with error %d", err);
         exit(EXIT_FAILURE);
     }
 
     // stop stream
-    CGError error = CGDisplayStreamStop(displayStream);
+    CGError error = CGDisplayStreamStop(self.displayStream);
     if (error != kCGErrorSuccess) {
         NSLog(@"ERROR - failed to stop display stream with error %d", error);
         exit(EXIT_FAILURE);
@@ -220,8 +221,8 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
     BOOL status = NO;
     IOSurfaceRef oldSurface;
     do {
-        oldSurface = updatedSurface;
-        status = OSAtomicCompareAndSwapPtrBarrier(oldSurface, surface, (void * volatile *)&updatedSurface);
+        oldSurface = self.updatedSurface;
+        status = OSAtomicCompareAndSwapPtrBarrier(oldSurface, surface, (void * volatile *)&_updatedSurface);
     } while (!status);
     return oldSurface;
 }
