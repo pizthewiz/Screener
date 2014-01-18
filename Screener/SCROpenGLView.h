@@ -9,4 +9,5 @@
 @import Cocoa;
 
 @interface SCROpenGLView : NSOpenGLView
+- (void)drawFrame:(IOSurfaceRef)surface;
 @end

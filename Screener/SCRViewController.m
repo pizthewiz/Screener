@@ -127,6 +127,8 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     self.display = display;
 
     if (self.display == kSCRDisplayIDNone) {
+        // poke the view to refresh
+        [self.glView drawRect:NSZeroRect];
         return;
     }
 
@@ -239,8 +241,8 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
         return;
     }
 
-    // TODO - publish
-//    [self.glView performSelector:@selector(drawView)];
+    [self.glView drawFrame:frame];
+    // TODO - publish to syphon
 
     CFRelease(frame);
 }
