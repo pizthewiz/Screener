@@ -113,6 +113,7 @@
     }
 
     glDeleteTextures(1, &_surfaceTexture);
+    self.surfaceTexture = 0;
 }
 
 - (void)drawScene {
