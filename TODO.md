@@ -3,6 +3,7 @@
 - [ ] pump texture into server
 - [ ] sort out some workflow to hide the window
 - [ ] activity during capture to prevent app nap
+- [ ] prevent texture stretching in preview
 
 ### LATER
 - [ ] draw something less cute on the 'NONE' screen
