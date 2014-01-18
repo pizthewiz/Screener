@@ -34,7 +34,8 @@ static void* SelectionIndexContext = &SelectionIndexContext;
     [self setupDisplayList];
     CGDisplayRegisterReconfigurationCallback(DisplayReconfigurationCallback, (__bridge void*)(self));
 
-    [self.displayArrayController addObserver:self forKeyPath:@"selectionIndex" options:NSKeyValueObservingOptionNew context:SelectionIndexContext];
+    self.display = UINT32_MAX;
+    [self.displayArrayController addObserver:self forKeyPath:@"selectionIndex" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:SelectionIndexContext];
 }
 
 - (void)dealloc {
@@ -106,6 +107,15 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     // bail if the selection hasn't changed
     if (self.display == display) {
         return;
+    }
+
+    if ([self.glView openGLContext]) {
+        NSString* name = display != kSCRDisplayIDNone ? displayDescriptor[@"name"] : @"NONE";
+        if (!self.server) {
+            self.server = [[SyphonServer alloc] initWithName:name context:[[self.glView openGLContext] CGLContextObj] options:nil];
+        } else {
+            self.server.name = name;
+        }
     }
 
     [self selectDisplay:display];
@@ -247,9 +257,6 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
     GLuint surfaceTexture = [self.glView createTextureForSurface:frame];
     [self.glView drawScene];
     if (surfaceTexture != 0) {
-        if (!self.server) {
-            self.server = [[SyphonServer alloc] initWithName:@"Screener" context:[[self.glView openGLContext] CGLContextObj] options:nil];
-        }
         [self.server publishFrameTexture:surfaceTexture textureTarget:GL_TEXTURE_RECTANGLE_EXT imageRegion:NSMakeRect(0.0f, 0.0f, self.glView.surfaceSize.width, self.glView.surfaceSize.height) textureDimensions:self.glView.surfaceSize flipped:YES];
     }
     [self.glView releaseTexture];
