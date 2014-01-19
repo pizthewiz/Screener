@@ -26,6 +26,8 @@ static void* SelectionIndexContext = &SelectionIndexContext;
 @implementation SCRViewController
 
 - (void)awakeFromNib {
+    [self.labelTextField setStringValue:[NSString stringWithFormat:@"%@:", NSLocalizedString(@"Display", nil)]];
+
     self.displayQueue = dispatch_queue_create("com.chordedconstructions.ScreenerCaptureQueue", DISPATCH_QUEUE_SERIAL);
     if (!self.displayQueue) {
         NSLog(@"ERROR - failed to create display queue");
@@ -81,7 +83,7 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     }
 
     NSMutableArray* displayList = [[NSMutableArray alloc] init];
-    [displayList addObject:@{@"name": @"- NONE -", @"id": @(kSCRDisplayIDNone)}];
+    [displayList addObject:@{@"name": [NSString stringWithFormat:@"- %@ -", NSLocalizedString(@"NONE", @"Display name for null selection")], @"id": @(kSCRDisplayIDNone)}];
 
     for (NSUInteger idx = 0; idx < displayCount; idx++) {
         CGDirectDisplayID display = displays[idx];
@@ -93,7 +95,7 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
 #pragma clang diagnostic pop
 
         NSDictionary* localizedNames = deviceInfo[@kDisplayProductName];
-        NSString* screenName = ([localizedNames count] > 0) ? localizedNames[[localizedNames allKeys][0]] : @"Unknown";
+        NSString* screenName = ([localizedNames count] > 0) ? localizedNames[[localizedNames allKeys][0]] : NSLocalizedString(@"Unknown", @"Display name for unknown device");
         [displayList addObject:@{@"name": screenName, @"id": @(display)}];
     }
     free(displays);
@@ -111,7 +113,7 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     }
 
     if ([self.glView openGLContext]) {
-        NSString* name = display != kSCRDisplayIDNone ? displayDescriptor[@"name"] : @"NONE";
+        NSString* name = display != kSCRDisplayIDNone ? displayDescriptor[@"name"] : NSLocalizedString(@"NONE", @"Display name for null selection");
         if (!self.server) {
             self.server = [[SyphonServer alloc] initWithName:name context:[[self.glView openGLContext] CGLContextObj] options:nil];
         } else {

@@ -21,6 +21,7 @@
             <connections>
                 <outlet property="displayArrayController" destination="fO3-aN-EcX" id="tPj-RU-ui0"/>
                 <outlet property="glView" destination="wEk-hG-Kxz" id="Uab-8J-5kG"/>
+                <outlet property="labelTextField" destination="3fD-oZ-giE" id="uUN-E2-axs"/>
                 <outlet property="view" destination="EiT-Mj-1SZ" id="Rb6-HV-40X"/>
             </connections>
         </viewController>

@@ -3,7 +3,6 @@
 - [ ] prevent texture stretching in preview
 - [ ] include screenshot in [README.md](README.md)
 - [ ] the display link may not be necessary, the display stream might handle it
-- [ ] migrate localized strings file 
 - [ ] add an application icon
 
 ### LATER
