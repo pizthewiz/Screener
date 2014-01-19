@@ -17,7 +17,6 @@ static void* SelectionIndexContext = &SelectionIndexContext;
 @property (nonatomic) dispatch_queue_t displayQueue;
 @property (nonatomic) CGDirectDisplayID display;
 @property (nonatomic) CGDisplayStreamRef displayStream;
-@property (nonatomic) CVDisplayLinkRef displayLink;
 @property (nonatomic) IOSurfaceRef updatedSurface;
 @property (nonatomic, strong) SyphonServer* server;
 @property (nonatomic, strong) id activity;
@@ -135,11 +134,6 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
         self.displayStream = NULL;
     }
 
-    if (self.displayLink) {
-        CVDisplayLinkRelease(self.displayLink);
-        self.displayLink = NULL;
-    }
-
     self.display = display;
 
     if (self.display == kSCRDisplayIDNone) {
@@ -163,41 +157,16 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     self.displayStream = CGDisplayStreamCreateWithDispatchQueue(self.display, pixelWidth, pixelHeight, 'BGRA', (__bridge CFDictionaryRef)properties, self.displayQueue, ^(CGDisplayStreamFrameStatus status, uint64_t displayTime, IOSurfaceRef frameSurface, CGDisplayStreamUpdateRef updateRef) {
         if (status == kCGDisplayStreamFrameStatusFrameComplete && frameSurface) {
             [self emitFrame:frameSurface];
+            [self publishFrame];
         }
     });
-
-    // create display link
-    CVReturn error = CVDisplayLinkCreateWithCGDisplay(self.display, &_displayLink);
-    if (error != kCVReturnSuccess) {
-        NSLog(@"ERROR - failed to create display link with error %d", error);
-        self.displayLink = NULL;
-        exit(EXIT_FAILURE);
-    }
-    error = CVDisplayLinkSetOutputCallback(self.displayLink, DisplayLinkCallback, (__bridge void*)(self));
-    if (error != kCVReturnSuccess) {
-        NSLog(@"ERROR - failed to link display link to callback with error %d", error);
-        self.displayLink = NULL;
-        exit(EXIT_FAILURE);
-    }
 }
 
 #pragma mark -
 
-CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext) {
-    [(__bridge SCRViewController*)displayLinkContext publishFrame];
-    return kCVReturnSuccess;
-}
-
 - (void)startDisplayStream {
     if (!self.displayStream) {
         return;
-    }
-
-    // start display link
-    CVReturn err = CVDisplayLinkStart(self.displayLink);
-    if (err != kCVReturnSuccess) {
-        NSLog(@"ERROR - failed to start display link with error %d", err);
-        exit(EXIT_FAILURE);
     }
 
     // start stream
@@ -214,13 +183,6 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
 - (void)stopDisplayStream {
     if (!self.displayStream) {
         return;
-    }
-
-    // stop display link
-    CVReturn err = CVDisplayLinkStop(self.displayLink);
-    if (err != kCVReturnSuccess) {
-        NSLog(@"ERROR - failed to stop display link with error %d", err);
-        exit(EXIT_FAILURE);
     }
 
     // stop stream
