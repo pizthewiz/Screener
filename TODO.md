@@ -1,7 +1,6 @@
 
 ### NOW
 - [ ] prevent texture stretching in preview
-- [ ] include screenshot in [README.md](README.md)
 - [ ] add an application icon
 
 ### LATER
