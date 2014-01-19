@@ -20,6 +20,7 @@ static void* SelectionIndexContext = &SelectionIndexContext;
 @property (nonatomic) CVDisplayLinkRef displayLink;
 @property (nonatomic) IOSurfaceRef updatedSurface;
 @property (nonatomic, strong) SyphonServer* server;
+@property (nonatomic, strong) id activity;
 @end
 
 @implementation SCRViewController
@@ -203,6 +204,9 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
         NSLog(@"ERROR - failed to start display stream with error %d", error);
         exit(EXIT_FAILURE);
     }
+
+    // start activity
+    self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"Display capture in-progress"];
 }
 
 - (void)stopDisplayStream {
@@ -222,6 +226,12 @@ CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* in
     if (error != kCGErrorSuccess) {
         NSLog(@"ERROR - failed to stop display stream with error %d", error);
         exit(EXIT_FAILURE);
+    }
+
+    // stop activity
+    if (self.activity) {
+        [[NSProcessInfo processInfo] endActivity:self.activity];
+        self.activity = nil;
     }
 }
 
