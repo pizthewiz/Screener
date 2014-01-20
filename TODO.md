@@ -4,6 +4,7 @@
 
 ### LATER
 - [ ] setup version info
+- [ ] figure out why window cannot be resized, lock context?
 - [ ] option to hide preview
 - [ ] draw something less cute on the 'NONE' screen
 - [ ] is there any benefit to use an FBO instead of separate textures for preview and Syphon server feeding?
