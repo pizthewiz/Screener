@@ -40,17 +40,17 @@
 - (void)prepareOpenGL {
     [super prepareOpenGL];
 
-    NSLog(@"GL_VENDOR: %s", glGetString(GL_VENDOR));
-    NSLog(@"GL_RENDERER: %s", glGetString(GL_RENDERER));
-    NSLog(@"GL_VERSION: %s", glGetString(GL_VERSION));
-    NSLog(@"GL_SHADING_LANGUAGE_VERSION: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-    NSLog(@"GL_EXTENSIONS:");
-    NSString* extensionsString = [@((char*)glGetString(GL_EXTENSIONS)) stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSArray* extensions = [extensionsString componentsSeparatedByString:@" "];
-    [extensions enumerateObjectsUsingBlock:^(NSString* extension, NSUInteger idx, BOOL *stop) {
-        NSLog(@"  %@", extension);
-    }];
+//    NSLog(@"GL_VENDOR: %s", glGetString(GL_VENDOR));
+//    NSLog(@"GL_RENDERER: %s", glGetString(GL_RENDERER));
+//    NSLog(@"GL_VERSION: %s", glGetString(GL_VERSION));
+//    NSLog(@"GL_SHADING_LANGUAGE_VERSION: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+//
+//    NSLog(@"GL_EXTENSIONS:");
+//    NSString* extensionsString = [@((char*)glGetString(GL_EXTENSIONS)) stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    NSArray* extensions = [extensionsString componentsSeparatedByString:@" "];
+//    [extensions enumerateObjectsUsingBlock:^(NSString* extension, NSUInteger idx, BOOL *stop) {
+//        NSLog(@"  %@", extension);
+//    }];
 }
 
 - (void)reshape {
