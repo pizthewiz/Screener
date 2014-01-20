@@ -123,59 +123,46 @@
     glClear(GL_COLOR_BUFFER_BIT);
 
     if (self.surfaceTexture != 0) {
-        // display texture, repurposed from https://code.google.com/p/iosurfacetest/source/browse/trunk/Classes/IOSurfaceTestView.m
-        GLfloat textureMatrix[16] = {0.0f};
-        GLint saveMatrixMode;
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0.0f, [self bounds].size.width, [self bounds].size.height, 0.0f, -1.0f, 1.0f);
 
-        // reverses and normalizes the texture
-        textureMatrix[0] = self.surfaceSize.width;
-        textureMatrix[5] = -self.surfaceSize.height;
-        textureMatrix[10] = 1.0f;
-        textureMatrix[13] = self.surfaceSize.height;
-        textureMatrix[15] = 1.0f;
-
-        glGetIntegerv(GL_MATRIX_MODE, &saveMatrixMode);
-        glMatrixMode(GL_TEXTURE);
-        glPushMatrix();
-        glLoadMatrixf(textureMatrix);
-        glMatrixMode(saveMatrixMode);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, self.surfaceTexture);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-        // draw textured quad
+        CGFloat aspectRatio = self.surfaceSize.width / self.surfaceSize.height;
+        CGFloat viewAspectRatio = [self bounds].size.width / [self bounds].size.height;
+        CGFloat scale = aspectRatio > viewAspectRatio ? [self bounds].size.width / self.surfaceSize.width : [self bounds].size.height / self.surfaceSize.height;
+
+        CGFloat width = self.surfaceSize.width * scale;
+        CGFloat height = self.surfaceSize.height * scale;
+        CGFloat x = [self bounds].origin.x + ([self bounds].size.width - width) / 2.0f;
+        CGFloat y = [self bounds].origin.y + ([self bounds].size.height - height) / 2.0f;
+        CGRect rect = CGRectMake(x, y, width, height);
+
+        glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
             glTexCoord2f(0.0f, 0.0f);
-            glVertex3f(-1.0f, -1.0f, 0.0f);
-            glTexCoord2f(1.0f, 0.0f);
-            glVertex3f(1.0f, -1.0f, 0.0f);
-            glTexCoord2f(1.0f, 1.0f);
-            glVertex3f(1.0f, 1.0f, 0.0f);
-            glTexCoord2f(0.0f, 1.0f);
-            glVertex3f(-1.0f, 1.0f, 0.0f);
+            glVertex2f(CGRectGetMinX(rect), CGRectGetMinY(rect));
+
+            glTexCoord2f(self.surfaceSize.width, 0.0f);
+            glVertex2f(CGRectGetMaxX(rect), CGRectGetMinY(rect));
+
+            glTexCoord2f(self.surfaceSize.width, self.surfaceSize.height);
+            glVertex2f(CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+
+            glTexCoord2f(0.0f, self.surfaceSize.height);
+            glVertex2f(CGRectGetMinX(rect), CGRectGetMaxY(rect));
         glEnd();
 
-        // restore texturing settings
         glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
         glDisable(GL_TEXTURE_RECTANGLE_ARB);
-
-        glGetIntegerv(GL_MATRIX_MODE, &saveMatrixMode);
-        glMatrixMode(GL_TEXTURE);
-        glPopMatrix();
     } else {
-        // TODO - replace placeholder content with something else
-        glColor3f(1.0f, 0.85f, 0.35f);
-        glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f);
-            glVertex3f(-1.0f, -1.0f, 0.0f);
-            glTexCoord2f(1.0f, 0.0f);
-            glVertex3f(1.0f, -1.0f, 0.0f);
-            glTexCoord2f(1.0f, 1.0f);
-            glVertex3f(1.0f, 1.0f, 0.0f);
-            glTexCoord2f(0.0f, 1.0f);
-            glVertex3f(-1.0f, 1.0f, 0.0f);
-        glEnd();
+        // TODO - draw something
     }
 
     [[self openGLContext] flushBuffer];

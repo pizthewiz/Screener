@@ -1,6 +1,5 @@
 
 ### NOW
-- [ ] prevent texture stretching in preview
 - [ ] add an application icon
 
 ### LATER
