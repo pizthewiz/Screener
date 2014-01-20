@@ -689,10 +689,10 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </openGLView>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qJV-F4-i37">
-                        <rect key="frame" x="304" y="17" width="205" height="26"/>
+                        <rect key="frame" x="324" y="17" width="165" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="200" id="gT3-Sd-P8W"/>
+                            <constraint firstAttribute="width" constant="160" id="gT3-Sd-P8W"/>
                         </constraints>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="Onu-sA-1YD">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -709,7 +709,7 @@
                         </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3fD-oZ-giE">
-                        <rect key="frame" x="234" y="23" width="54" height="17"/>
+                        <rect key="frame" x="266" y="23" width="54" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Display:" id="Gus-PK-vga">
                             <font key="font" metaFont="system"/>
@@ -724,7 +724,7 @@
                     <constraint firstItem="wEk-hG-Kxz" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="8S4-vV-o8o"/>
                     <constraint firstItem="qJV-F4-i37" firstAttribute="top" secondItem="wEk-hG-Kxz" secondAttribute="bottom" constant="20" id="BqI-xZ-Dnp"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qJV-F4-i37" secondAttribute="trailing" constant="20" id="JWu-no-XtI"/>
-                    <constraint firstItem="qJV-F4-i37" firstAttribute="leading" secondItem="3fD-oZ-giE" secondAttribute="trailing" constant="20" id="NSw-O0-zBe"/>
+                    <constraint firstItem="qJV-F4-i37" firstAttribute="leading" secondItem="3fD-oZ-giE" secondAttribute="trailing" constant="8" id="NSw-O0-zBe"/>
                     <constraint firstItem="wEk-hG-Kxz" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="O8D-ha-pA8"/>
                     <constraint firstItem="3fD-oZ-giE" firstAttribute="baseline" secondItem="qJV-F4-i37" secondAttribute="baseline" id="VYD-pK-zGz"/>
                     <constraint firstAttribute="bottom" secondItem="qJV-F4-i37" secondAttribute="bottom" constant="20" id="gBx-C3-1Rv"/>
