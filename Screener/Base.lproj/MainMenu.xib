@@ -678,14 +678,14 @@
         <window title="Screener" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="720" height="500"/>
+            <rect key="contentRect" x="335" y="390" width="720" height="511"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="720" height="500"/>
+                <rect key="frame" x="0.0" y="0.0" width="720" height="511"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wEk-hG-Kxz" customClass="SCROpenGLView">
-                        <rect key="frame" x="0.0" y="61" width="720" height="439"/>
+                        <rect key="frame" x="0.0" y="61" width="720" height="450"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </openGLView>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qJV-F4-i37">
