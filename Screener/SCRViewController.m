@@ -177,7 +177,9 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     }
 
     // start activity
-    self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"Display capture in-progress"];
+    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
+        self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"Display capture in-progress"];
+    }
 }
 
 - (void)stopDisplayStream {
