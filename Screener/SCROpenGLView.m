@@ -11,7 +11,7 @@
 
 @interface SCROpenGLView ()
 @property (nonatomic, readwrite) GLuint surfaceTexture;
-@end;
+@end
 
 @implementation SCROpenGLView
 
@@ -59,9 +59,9 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    // NB - apparently only occurs on -reshape
-    [self releaseTexture];
-    [self drawScene];
+//    // NB - apparently only occurs on -reshape
+//    [self releaseTexture];
+//    [self drawScene];
 }
 
 #pragma mark -
