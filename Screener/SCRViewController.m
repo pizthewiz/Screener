@@ -3,7 +3,7 @@
 //  Screener
 //
 //  Created by Jean-Pierre Mouilleseaux on 14 Jan 2014.
-//  Copyright (c) 2014 Chorded Constructions. All rights reserved.
+//  Copyright (c) 2014-2015 Chorded Constructions. All rights reserved.
 //
 
 #import "SCRViewController.h"
@@ -87,14 +87,10 @@ void DisplayReconfigurationCallback(CGDirectDisplayID display, CGDisplayChangeSu
     for (NSUInteger idx = 0; idx < displayCount; idx++) {
         CGDirectDisplayID display = displays[idx];
 
-        // ignore deprecated warning on CGDisplayIOServicePort, no replacement has been provided!
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        // NB - IODisplayCreateInfoDictionary has been un-deprecated 👏
         NSDictionary* deviceInfo = (__bridge_transfer NSDictionary*)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(display), kIODisplayOnlyPreferredName);
-#pragma clang diagnostic pop
-
         NSDictionary* localizedNames = deviceInfo[@kDisplayProductName];
-        NSString* screenName = ([localizedNames count] > 0) ? localizedNames[[localizedNames allKeys][0]] : NSLocalizedString(@"Unknown", @"Display name for unknown device");
+        NSString* screenName = ([localizedNames count] > 0) ? localizedNames[[localizedNames allKeys].firstObject] : NSLocalizedString(@"Unknown", @"Display name for unknown device");
         [displayList addObject:@{@"name": screenName, @"id": @(display)}];
     }
     free(displays);
