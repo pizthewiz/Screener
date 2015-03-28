@@ -20,7 +20,7 @@
 		D838DA1A187F448E00913B79 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D838D9F9187F448E00913B79 /* Cocoa.framework */; };
 		D838DA22187F448E00913B79 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D838DA20187F448E00913B79 /* InfoPlist.strings */; };
 		D838DA24187F448E00913B79 /* ScreenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D838DA23187F448E00913B79 /* ScreenerTests.m */; };
-		D838DA3B187F7CCB00913B79 /* Syphon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = D838DA37187F7C9300913B79 /* Syphon.framework */; };
+		D838DA3B187F7CCB00913B79 /* Syphon.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = D838DA37187F7C9300913B79 /* Syphon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D838DA3C187FC26900913B79 /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D838DA37187F7C9300913B79 /* Syphon.framework */; };
 		D8B856BF188C7B64002D53DA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D8B856BD188C7B64002D53DA /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -265,7 +265,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = SCR;
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Chorded Constructions";
 				TargetAttributes = {
 					D838DA16187F448E00913B79 = {
